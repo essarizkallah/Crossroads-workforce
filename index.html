@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crossroads Workforce Manager</title>
+<script src="https://alcdn.msauth.net/browser/2.38.1/js/msal-browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f3f2f1;color:#1a1a1a;min-height:100vh}
+.app{max-width:520px;margin:0 auto;background:#fff;min-height:100vh;display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+header{padding:16px 20px 0;border-bottom:1px solid #edebe9;background:#fff}
+.logo{font-size:15px;font-weight:600;color:#1a1a1a;margin-bottom:2px}
+.logo span{color:#0078d4}
+.auth-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 0 12px;font-size:12px;color:#605e5c}
+.auth-name{display:flex;align-items:center;gap:6px}
+.avatar{width:24px;height:24px;border-radius:50%;background:#0078d4;color:#fff;font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.sign-btn{font-size:12px;color:#0078d4;background:none;border:none;cursor:pointer;padding:0}
+nav{display:flex}
+.nav-btn{flex:1;padding:10px 0;font-size:13px;background:none;border:none;border-bottom:2px solid transparent;color:#605e5c;cursor:pointer;transition:all .15s}
+.nav-btn.active{color:#0078d4;border-bottom-color:#0078d4;font-weight:500}
+main{flex:1;padding:20px}
+.sec{display:none}
+.sec.active{display:block}
+.lbl{font-size:12px;color:#605e5c;display:block;margin:14px 0 5px;font-weight:500}
+select,input[type=text],input[type=number],textarea{
+  width:100%;padding:8px 10px;border:1px solid #8a8886;border-radius:2px;
+  font-size:14px;background:#fff;color:#1a1a1a;outline:none;font-family:inherit;transition:border-color .1s
+}
+select:focus,input:focus,textarea:focus{border-color:#0078d4;box-shadow:0 0 0 1px #0078d4}
+textarea{resize:vertical;min-height:72px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-p{width:100%;margin-top:20px;padding:10px;background:#0078d4;color:#fff;border:none;border-radius:2px;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s}
+.btn-p:hover{background:#106ebe}
+.btn-p:active{background:#005a9e}
+.btn-p:disabled{background:#c8c6c4;cursor:not-allowed}
+.btn-s{width:100%;margin-top:10px;padding:9px;background:#fff;border:1px solid #8a8886;border-radius:2px;font-size:13px;color:#323130;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .1s}
+.btn-s:hover{background:#f3f2f1}
+.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
+.mc{background:#f3f2f1;border-radius:2px;padding:14px;border-left:3px solid #0078d4}
+.mc.warn{border-left-color:#d83b01}
+.ml{font-size:11px;color:#605e5c;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+.mv{font-size:24px;font-weight:600;color:#1a1a1a}
+.mv.warn{color:#d83b01}
+.slbl{font-size:11px;font-weight:600;color:#605e5c;text-transform:uppercase;letter-spacing:.07em;margin:1.5rem 0 8px}
+.erow{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border:1px solid #edebe9;border-radius:2px;margin-bottom:6px;background:#fff}
+.erow:hover{background:#f3f2f1}
+.en{font-size:13px;font-weight:500}
+.es{font-size:11px;color:#605e5c;margin-top:2px}
+.eh{font-size:14px;font-weight:600}
+.eh.ot{color:#d83b01}
+.bdg{font-size:10px;padding:2px 8px;border-radius:2px;font-weight:500}
+.bot{background:#fed9cc;color:#a4262c}
+.bok{background:#dff6dd;color:#107c10}
+.wtog{display:flex;border:1px solid #8a8886;border-radius:2px;margin-bottom:1.5rem;overflow:hidden}
+.wbtn{flex:1;padding:8px;font-size:12px;border:none;background:#fff;color:#605e5c;cursor:pointer;transition:all .1s}
+.wbtn.active{background:#0078d4;color:#fff;font-weight:500}
+.cwrap{position:relative;width:100%;height:210px;margin-bottom:1.5rem}
+.empty{text-align:center;padding:2.5rem 1rem;color:#a19f9d;font-size:13px}
+.banner{display:flex;align-items:center;gap:8px;font-size:12px;color:#605e5c;background:#fff4ce;border:1px solid #f7e08a;border-radius:2px;padding:8px 12px;margin-bottom:1.25rem}
+.sync-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.sync-status{font-size:11px;color:#605e5c;display:flex;align-items:center;gap:5px}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#107c10}
+.sync-dot.loading{background:#f7630c;animation:pulse 1s infinite}
+.sync-dot.error{background:#a4262c}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.btn-sync{font-size:11px;color:#0078d4;background:none;border:none;cursor:pointer;padding:0}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#323130;color:#fff;padding:10px 20px;border-radius:2px;font-size:13px;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;z-index:1000}
+.toast.show{opacity:1}
+.cfg-note{font-size:12px;color:#605e5c;line-height:1.6;margin-bottom:14px;padding:10px;background:#f3f2f1;border-radius:2px}
+.cfg-note code{background:#edebe9;padding:1px 5px;border-radius:2px;font-size:11px;font-family:monospace}
+.divider{height:1px;background:#edebe9;margin:20px 0}
+.field-path{display:flex;gap:8px}
+.field-path input{flex:1}
+.sp-link{font-size:12px;color:#0078d4;text-decoration:none}
+.sp-link:hover{text-decoration:underline}
+input[type=file]{display:none}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
+.tag{font-size:11px;background:#deecf9;color:#004578;padding:3px 9px;border-radius:2px}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">Crossroads <span>Workforce</span></div>
+    <div class="auth-bar">
+      <div class="auth-name" id="auth-info">
+        <div class="avatar" id="auth-avatar">?</div>
+        <span id="auth-name-text">Not signed in</span>
+      </div>
+      <button class="sign-btn" id="sign-btn" onclick="toggleAuth()">Sign in</button>
+    </div>
+    <nav>
+      <button class="nav-btn active" onclick="sw('log',this)">Log Time</button>
+      <button class="nav-btn" onclick="sw('dash',this)">Dashboard</button>
+      <button class="nav-btn" onclick="sw('cfg',this)">Config</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- LOG TIME -->
+    <div id="tab-log" class="sec active">
+      <div id="banner" class="banner">&#9888;&#65039; Sign in with Microsoft to load employee &amp; job data automatically.</div>
+      <div class="sync-bar" id="sync-bar" style="display:none">
+        <div class="sync-status"><div class="sync-dot" id="sync-dot"></div><span id="sync-text">Data loaded</span></div>
+        <button class="btn-sync" onclick="loadWorkbook()">&#8635; Refresh</button>
+      </div>
+      <span class="lbl">Employee</span>
+      <select id="sel-emp"><option value="">— select employee —</option></select>
+      <span class="lbl">Cost code / work type</span>
+      <select id="sel-job"><option value="">— select cost code —</option></select>
+      <span class="lbl">Date</span>
+      <input type="text" id="entry-date" placeholder="MM/DD/YYYY">
+      <div class="row2">
+        <div><span class="lbl">Regular hours</span><input type="number" id="reg-hrs" min="0" max="24" step="0.5" placeholder="0.0"></div>
+        <div><span class="lbl">Overtime hours</span><input type="number" id="ot-hrs" min="0" max="24" step="0.5" placeholder="0.0"></div>
+      </div>
+      <span class="lbl">Notes / remarks</span>
+      <textarea id="notes" placeholder="Add site notes or remarks..."></textarea>
+      <button class="btn-p" onclick="submitEntry()">Save Entry</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="tab-dash" class="sec">
+      <div class="wtog">
+        <button class="wbtn active" onclick="swWeek('cur',this)">Current week</button>
+        <button class="wbtn" onclick="swWeek('last',this)">Last week</button>
+      </div>
+      <div class="mgrid" id="metrics"></div>
+      <div class="slbl">Hours by cost code</div>
+      <div class="cwrap"><canvas id="jChart" role="img" aria-label="Hours per cost code"></canvas></div>
+      <div class="slbl">Employee summary</div>
+      <div id="emp-list"></div>
+    </div>
+
+    <!-- CONFIG -->
+    <div id="tab-cfg" class="sec">
+      <div class="slbl">Microsoft 365 connection</div>
+      <div class="cfg-note">
+        The app comes preloaded with the current employee and cost code data from <code>Crossroads_EMP_data_template.xlsx</code>.
+        Connect to SharePoint below to refresh automatically whenever the template is updated — or use the manual upload fallback.
+      </div>
+
+      <span class="lbl">SharePoint site URL</span>
+      <input type="text" id="cfg-site" placeholder="https://yourcompany.sharepoint.com/sites/YourSite" oninput="saveCfg()">
+
+      <span class="lbl">Path to workbook in SharePoint</span>
+      <div class="field-path">
+        <input type="text" id="cfg-path" placeholder="/Shared Documents/Crossroads_EMP_data_template.xlsx" oninput="saveCfg()">
+      </div>
+      <p style="font-size:11px;color:#605e5c;margin-top:5px">Example: <code>/Shared Documents/HR/Crossroads_EMP_data_template.xlsx</code></p>
+
+      <span class="lbl">Azure AD App (Client) ID</span>
+      <input type="text" id="cfg-clientid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" oninput="saveCfg()">
+      <p style="font-size:11px;color:#605e5c;margin-top:5px">Register an app in Azure AD with <code>Files.Read</code> and <code>Sites.Read.All</code> permissions. <a class="sp-link" href="https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade" target="_blank">Open Azure Portal &#8599;</a></p>
+
+      <button class="btn-p" style="margin-top:16px" onclick="applyAndLoad()">Apply &amp; Load Workbook</button>
+
+      <div class="divider"></div>
+      <div class="slbl">Manual fallback</div>
+      <p style="font-size:12px;color:#605e5c;margin-bottom:10px">If Graph API is unavailable, upload the workbook manually.</p>
+      <button class="btn-s" onclick="document.getElementById('fInput').click()">&#128196; Upload workbook manually</button>
+      <input type="file" id="fInput" accept=".xlsx,.xls" onchange="handleFileUpload(event)">
+      <div id="manual-status" style="font-size:12px;color:#107c10;margin-top:6px"></div>
+
+      <div class="divider"></div>
+      <div class="slbl">OT threshold</div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:1.5rem">
+        <input type="range" id="ot-thresh" min="30" max="60" step="1" value="40" style="flex:1;accent-color:#0078d4" oninput="document.getElementById('ot-val').textContent=this.value;saveCfg()">
+        <span id="ot-val" style="font-size:15px;font-weight:600;min-width:28px">40</span>
+        <span style="font-size:12px;color:#605e5c">hrs / week</span>
+      </div>
+
+      <div class="divider"></div>
+      <div class="slbl">Export &amp; data</div>
+      <button class="btn-s" onclick="exportCSV()">&#11015; Export all entries to CSV</button>
+      <button class="btn-s" style="margin-top:8px;color:#a4262c;border-color:#f1707b" onclick="clearEntries()">&#128465; Clear all entries</button>
+    </div>
+  </main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+var emps=[
+  {id:'111121',first:'Tracie',last:'Wright'},
+  {id:'111122',first:'David',last:'Lamberton'},
+  {id:'111123',first:'Ghalib',last:'Zaitawi'},
+  {id:'111124',first:'Rodney',last:'Shouse'},
+  {id:'111125',first:'Leonardo',last:'Bornios'},
+  {id:'111126',first:'David',last:'Allen'},
+  {id:'111127',first:'Pedro',last:'Sanchez'},
+  {id:'111128',first:'Ramon',last:'Navarrete-Hernandez'},
+  {id:'111129',first:'Sergio',last:'Simon'},
+  {id:'111130',first:'Esgar',last:'Flores'},
+  {id:'111131',first:'David',last:'Mirarchi'},
+  {id:'111132',first:'Torrance',last:'Person'},
+  {id:'111133',first:'Robert',last:'Evans'},
+  {id:'111134',first:'Marten',last:'Lorenzo'},
+  {id:'111135',first:'Solomon',last:'Gathings'},
+  {id:'111136',first:'Brandy',last:'Saguilan'},
+  {id:'111137',first:'Mark',last:'DeWitt'},
+  {id:'111138',first:'Mohammed',last:'Amro'},
+  {id:'111139',first:'Charles',last:'Easter, Jr'},
+  {id:'111140',first:'Tyler',last:'Toomes'},
+  {id:'111141',first:'Isabel',last:'Clemente'},
+  {id:'111142',first:'Rodney',last:'Thompson'},
+  {id:'111143',first:'Kevin',last:'Ivory'},
+  {id:'111144',first:'Forrest',last:'Brown'},
+  {id:'111145',first:'Joseph',last:'Armijo'},
+  {id:'111146',first:'Mahamud',last:'Lugor'},
+  {id:'111147',first:'James',last:'Call'},
+  {id:'111148',first:'Essa',last:'Rizkallah'},
+  {id:'111149',first:'Thomas',last:'Cornell'},
+  {id:'111150',first:'William',last:'Blevins'},
+  {id:'111151',first:'Solomon',last:'Gathings'},
+  {id:'111152',first:'Mohammed',last:'Amro'}
+];
+var jobs=[
+  {code:'2006',type:'Grading'},
+  {code:'3024',type:'Curb and Gutter'},
+  {code:'3019',type:"4' Sidewalk"},
+  {code:'3044',type:'Manhole adjustments'},
+  {code:'2033',type:'Valve box service'},
+  {code:'2177',type:'Concrete Curb Ramps'},
+  {code:'3076',type:'Monolithic Islands'},
+  {code:'3056',type:'Bull Shit work'},
+  {code:'9999',type:'Other'}
+];
+var entries=[], activeWeek='cur', jChart=null, msalApp=null, account=null;
+
+// ── Config persistence ─────────────────────────────────────────────────────
+function loadCfg(){
+  try{
+    var c=JSON.parse(localStorage.getItem('cwCfg')||'{}');
+    if(c.site) document.getElementById('cfg-site').value=c.site;
+    if(c.path) document.getElementById('cfg-path').value=c.path;
+    if(c.clientId) document.getElementById('cfg-clientid').value=c.clientId;
+    if(c.otThresh){ document.getElementById('ot-thresh').value=c.otThresh; document.getElementById('ot-val').textContent=c.otThresh; }
+  }catch(e){}
+}
+function saveCfg(){
+  try{
+    localStorage.setItem('cwCfg',JSON.stringify({
+      site:document.getElementById('cfg-site').value.trim(),
+      path:document.getElementById('cfg-path').value.trim(),
+      clientId:document.getElementById('cfg-clientid').value.trim(),
+      otThresh:document.getElementById('ot-thresh').value
+    }));
+  }catch(e){}
+}
+function getCfg(){
+  try{ return JSON.parse(localStorage.getItem('cwCfg')||'{}'); }catch(e){ return{}; }
+}
+
+// ── MSAL / Auth ────────────────────────────────────────────────────────────
+function initMsal(clientId){
+  if(!clientId){ showToast('Enter your Azure AD Client ID in Config first'); return null; }
+  var cfg=getCfg();
+  var tenantAuthority='https://login.microsoftonline.com/common';
+  return new msal.PublicClientApplication({
+    auth:{ clientId:clientId, authority:tenantAuthority, redirectUri:window.location.href.split('?')[0] },
+    cache:{ cacheLocation:'localStorage', storeAuthStateInCookie:true }
+  });
+}
+
+async function toggleAuth(){
+  var cfg=getCfg();
+  if(account){ signOut(); return; }
+  msalApp=initMsal(cfg.clientId);
+  if(!msalApp) return;
+  try{
+    var resp=await msalApp.loginPopup({ scopes:['User.Read','Files.Read','Sites.Read.All'] });
+    account=resp.account;
+    updateAuthUI();
+    await loadWorkbook();
+  }catch(e){
+    if(e.errorCode!=='user_cancelled') showToast('Sign-in failed: '+e.message);
+  }
+}
+
+function signOut(){
+  if(msalApp&&account) msalApp.logoutPopup({account:account}).catch(()=>{});
+  account=null; msalApp=null;
+  updateAuthUI();
+  showToast('Signed out');
+}
+
+function updateAuthUI(){
+  var nameEl=document.getElementById('auth-name-text');
+  var avatarEl=document.getElementById('auth-avatar');
+  var signBtn=document.getElementById('sign-btn');
+  var banner=document.getElementById('banner');
+  var syncBar=document.getElementById('sync-bar');
+  if(account){
+    var name=account.name||account.username;
+    nameEl.textContent=name;
+    avatarEl.textContent=name.charAt(0).toUpperCase();
+    signBtn.textContent='Sign out';
+    banner.style.display='none';
+    syncBar.style.display='flex';
+  }else{
+    nameEl.textContent='Not signed in';
+    avatarEl.textContent='?';
+    signBtn.textContent='Sign in';
+    banner.style.display='flex';
+    syncBar.style.display='none';
+  }
+}
+
+async function getToken(){
+  if(!msalApp||!account) return null;
+  try{
+    var r=await msalApp.acquireTokenSilent({ scopes:['Files.Read','Sites.Read.All'], account:account });
+    return r.accessToken;
+  }catch(e){
+    try{
+      var r2=await msalApp.acquireTokenPopup({ scopes:['Files.Read','Sites.Read.All'] });
+      return r2.accessToken;
+    }catch(e2){ return null; }
+  }
+}
+
+// ── Graph API: load workbook ───────────────────────────────────────────────
+async function loadWorkbook(){
+  setSyncStatus('loading','Loading workbook...');
+  var token=await getToken();
+  if(!token){ setSyncStatus('error','Not signed in'); return; }
+  var cfg=getCfg();
+  if(!cfg.site||!cfg.path){ setSyncStatus('error','Set SharePoint site + path in Config'); return; }
+
+  try{
+    // Get site ID
+    var siteHostPath=cfg.site.replace('https://','').split('/');
+    var hostname=siteHostPath[0];
+    var sitePath='/'+siteHostPath.slice(1).join('/');
+    var siteResp=await fetch('https://graph.microsoft.com/v1.0/sites/'+hostname+':'+sitePath,{
+      headers:{ Authorization:'Bearer '+token }
+    });
+    if(!siteResp.ok) throw new Error('Could not find SharePoint site ('+siteResp.status+')');
+    var siteData=await siteResp.json();
+    var siteId=siteData.id;
+
+    // Get file content
+    var filePath=cfg.path.replace(/^\/+/,'');
+    var fileResp=await fetch('https://graph.microsoft.com/v1.0/sites/'+siteId+'/drive/root:/'+filePath+':/content',{
+      headers:{ Authorization:'Bearer '+token }
+    });
+    if(!fileResp.ok) throw new Error('Could not read workbook file ('+fileResp.status+'). Check the file path in Config.');
+    var arrayBuffer=await fileResp.arrayBuffer();
+    parseWorkbook(arrayBuffer);
+    setSyncStatus('ok','Synced from SharePoint');
+  }catch(e){
+    setSyncStatus('error','Error: '+e.message);
+    showToast('Load failed: '+e.message);
+  }
+}
+
+function parseWorkbook(buffer){
+  var data=new Uint8Array(buffer);
+  var wb=XLSX.read(data,{type:'array'});
+  var eSheet=wb.Sheets['Employee Data']||wb.Sheets[wb.SheetNames[0]];
+  var jSheet=wb.Sheets['Job Data']||wb.Sheets[wb.SheetNames[1]];
+  var eData=XLSX.utils.sheet_to_json(eSheet,{defval:''});
+  var jData=jSheet?XLSX.utils.sheet_to_json(jSheet,{defval:''}):[];
+  emps=eData.map(function(r){return{
+    id:String(r['User ID']||'').trim(),
+    first:String(r['First Name']||'').trim(),
+    last:String(r['Last Name']||'').trim()
+  }}).filter(function(x){return x.id&&x.first;});
+  jobs=jData.map(function(r){return{
+    code:String(r['Cost Codes']||'').trim(),
+    type:String(r['Work Type']||'').trim()
+  }}).filter(function(x){return x.code;});
+  populateDDs();
+  showToast('Loaded: '+emps.length+' employees, '+jobs.length+' cost codes');
+}
+
+function setSyncStatus(state,text){
+  var dot=document.getElementById('sync-dot');
+  var txt=document.getElementById('sync-text');
+  dot.className='sync-dot'+(state==='loading'?' loading':state==='error'?' error':'');
+  txt.textContent=text;
+}
+
+// ── Manual file fallback ───────────────────────────────────────────────────
+function handleFileUpload(e){
+  var file=e.target.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(ev){
+    try{
+      parseWorkbook(ev.target.result);
+      document.getElementById('manual-status').textContent='Loaded from file: '+file.name;
+      document.getElementById('banner').style.display='none';
+      document.getElementById('sync-bar').style.display='flex';
+      setSyncStatus('ok','Loaded from local file');
+    }catch(err){ showToast('Error reading file'); }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function applyAndLoad(){
+  saveCfg();
+  var cfg=getCfg();
+  msalApp=initMsal(cfg.clientId);
+  if(!msalApp) return;
+  if(account){ loadWorkbook(); }
+  else{ toggleAuth(); }
+}
+
+// ── Dropdowns ──────────────────────────────────────────────────────────────
+function populateDDs(){
+  var se=document.getElementById('sel-emp');
+  se.innerHTML='<option value="">— select employee —</option>';
+  emps.forEach(function(e){
+    var o=document.createElement('option');
+    o.value=e.id; o.textContent=e.first+' '+e.last+' ('+e.id+')'; se.appendChild(o);
+  });
+  var sj=document.getElementById('sel-job');
+  sj.innerHTML='<option value="">— select cost code —</option>';
+  jobs.forEach(function(j){
+    var o=document.createElement('option');
+    o.value=j.code; o.textContent=j.code+' — '+j.type; sj.appendChild(o);
+  });
+}
+
+// ── Week helpers ───────────────────────────────────────────────────────────
+function getWeekRange(offset){
+  var now=new Date();
+  var mon=new Date(now); mon.setDate(now.getDate()-((now.getDay()+6)%7)+offset*7);
+  var sun=new Date(mon); sun.setDate(mon.getDate()+6);
+  mon.setHours(0,0,0,0); sun.setHours(23,59,59,999);
+  return{start:mon,end:sun};
+}
+function inRange(ds,r){
+  var p=ds.split('/'); if(p.length!==3) return false;
+  var d=new Date(parseInt(p[2]),parseInt(p[0])-1,parseInt(p[1]));
+  return d>=r.start&&d<=r.end;
+}
+
+// ── Entry submission ───────────────────────────────────────────────────────
+function submitEntry(){
+  var es=document.getElementById('sel-emp');
+  var js=document.getElementById('sel-job');
+  var empId=es.value, empTxt=es.options[es.selectedIndex].text;
+  var jobCode=js.value, jobTxt=js.options[js.selectedIndex].text;
+  var date=document.getElementById('entry-date').value;
+  var reg=parseFloat(document.getElementById('reg-hrs').value)||0;
+  var ot=parseFloat(document.getElementById('ot-hrs').value)||0;
+  var notes=document.getElementById('notes').value;
+  if(!empId||!jobCode||!date){ showToast('Fill in employee, cost code, and date'); return; }
+  if(reg===0&&ot===0){ showToast('Enter at least some hours'); return; }
+  var supervisor=account?account.name:'Unknown';
+  entries.push({empId:empId,empTxt:empTxt,jobCode:jobCode,jobTxt:jobTxt,date:date,reg:reg,ot:ot,notes:notes,loggedBy:supervisor,ts:new Date().toISOString()});
+  document.getElementById('reg-hrs').value='';
+  document.getElementById('ot-hrs').value='';
+  document.getElementById('notes').value='';
+  showToast('Entry saved');
+}
+
+// ── Dashboard ──────────────────────────────────────────────────────────────
+function renderDash(){
+  var offset=activeWeek==='cur'?0:-1;
+  var range=getWeekRange(offset);
+  var filtered=entries.filter(function(e){return inRange(e.date,range);});
+  var thresh=parseInt(document.getElementById('ot-thresh').value);
+  var totalReg=filtered.reduce(function(a,e){return a+e.reg;},0);
+  var totalOT=filtered.reduce(function(a,e){return a+e.ot;},0);
+  var empIds=[]; filtered.forEach(function(e){if(empIds.indexOf(e.empId)<0)empIds.push(e.empId);});
+  var empHrs={};
+  filtered.forEach(function(e){empHrs[e.empId]=(empHrs[e.empId]||0)+e.reg+e.ot;});
+  var otCount=Object.values(empHrs).filter(function(h){return h>=thresh;}).length;
+  document.getElementById('metrics').innerHTML=
+    '<div class="mc"><div class="ml">Regular hours</div><div class="mv">'+totalReg.toFixed(1)+'</div></div>'+
+    '<div class="mc '+(totalOT>0?'warn':'')+'"><div class="ml">Overtime hours</div><div class="mv'+(totalOT>0?' warn':'')+'">'+totalOT.toFixed(1)+'</div></div>'+
+    '<div class="mc"><div class="ml">Employees logged</div><div class="mv">'+empIds.length+'</div></div>'+
+    '<div class="mc '+(otCount>0?'warn':'')+'"><div class="ml">OT alerts (>='+thresh+'h)</div><div class="mv'+(otCount>0?' warn':'')+'">'+otCount+'</div></div>';
+  var jobHrs={};
+  filtered.forEach(function(e){
+    var lbl=e.jobCode+(e.jobTxt.indexOf(' — ')>-1?' — '+e.jobTxt.split(' — ')[1]:'');
+    jobHrs[lbl]=(jobHrs[lbl]||0)+e.reg+e.ot;
+  });
+  var jL=Object.keys(jobHrs), jV=Object.values(jobHrs);
+  if(jChart){jChart.destroy();jChart=null;}
+  if(jL.length>0){
+    jChart=new Chart(document.getElementById('jChart'),{
+      type:'bar',
+      data:{labels:jL,datasets:[{label:'Hours',data:jV,backgroundColor:'#0078d4',borderRadius:2}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+        scales:{x:{ticks:{font:{size:10},autoSkip:false,maxRotation:35},grid:{display:false}},
+                y:{beginAtZero:true,ticks:{font:{size:11}}}}}
+    });
+  }
+  var el=document.getElementById('emp-list');
+  if(!filtered.length){el.innerHTML='<div class="empty">No entries for this week yet</div>';return;}
+  var em={};
+  filtered.forEach(function(e){
+    if(!em[e.empId])em[e.empId]={txt:e.empTxt,reg:0,ot:0};
+    em[e.empId].reg+=e.reg; em[e.empId].ot+=e.ot;
+  });
+  el.innerHTML=Object.values(em).sort(function(a,b){return(b.reg+b.ot)-(a.reg+a.ot);}).map(function(e){
+    var total=e.reg+e.ot, isOT=total>=thresh;
+    var name=e.txt.replace(/ \(\d+\)$/,'');
+    return'<div class="erow"><div><div class="en">'+name+'</div><div class="es">'+e.reg.toFixed(1)+'h reg / '+e.ot.toFixed(1)+'h OT</div></div>'+
+      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'+
+      '<span class="eh'+(isOT?' ot':'')+'">'+total.toFixed(1)+'h</span>'+
+      '<span class="bdg '+(isOT?'bot':'bok')+'">'+(isOT?'OT alert':'On track')+'</span></div></div>';
+  }).join('');
+}
+
+function swWeek(w,btn){
+  activeWeek=w;
+  document.querySelectorAll('.wbtn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');
+  renderDash();
+}
+
+// ── Export ─────────────────────────────────────────────────────────────────
+function exportCSV(){
+  if(!entries.length){showToast('No entries to export yet');return;}
+  var rows=[['Employee Name','User ID','Cost Code','Work Type','Date','Regular hrs','OT hrs','Notes','Logged By','Timestamp']];
+  entries.forEach(function(e){
+    var emp=emps.find(function(x){return x.id===e.empId;});
+    var job=jobs.find(function(x){return x.code===e.jobCode;});
+    rows.push([emp?emp.first+' '+emp.last:e.empTxt,e.empId,e.jobCode,job?job.type:'',e.date,e.reg.toFixed(1),e.ot.toFixed(1),e.notes,e.loggedBy||'',e.ts||'']);
+  });
+  var csv=rows.map(function(r){return r.map(function(v){return'"'+String(v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='crossroads_time_'+new Date().toISOString().slice(0,10)+'.csv';
+  a.click();
+  showToast('CSV exported');
+}
+
+function clearEntries(){
+  if(!entries.length){showToast('No entries to clear');return;}
+  if(!confirm('Clear all '+entries.length+' entries? This cannot be undone.')) return;
+  entries=[];
+  showToast('All entries cleared');
+}
+
+// ── Nav ────────────────────────────────────────────────────────────────────
+function sw(tab,btn){
+  document.querySelectorAll('.sec').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active');});
+  document.getElementById('tab-'+tab).classList.add('active');
+  btn.classList.add('active');
+  if(tab==='dash') renderDash();
+}
+
+function showToast(msg){
+  var t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  setTimeout(function(){t.classList.remove('show');},2800);
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+var d=new Date();
+document.getElementById('entry-date').value=(d.getMonth()+1).toString().padStart(2,'0')+'/'+d.getDate().toString().padStart(2,'0')+'/'+d.getFullYear();
+loadCfg();
+// Preloaded data — populate dropdowns immediately, no upload needed
+populateDDs();
+document.getElementById('banner').style.display='none';
+document.getElementById('sync-bar').style.display='flex';
+document.getElementById('sync-dot').className='sync-dot';
+document.getElementById('sync-text').textContent='Preloaded data ('+emps.length+' employees, '+jobs.length+' cost codes)';
+
+// Try silent sign-in on load if clientId is already saved
+window.addEventListener('load', async function(){
+  var cfg=getCfg();
+  if(!cfg.clientId) return;
+  msalApp=initMsal(cfg.clientId);
+  if(!msalApp) return;
+  try{
+    var accounts=msalApp.getAllAccounts();
+    if(accounts.length>0){
+      account=accounts[0];
+      updateAuthUI();
+      await loadWorkbook();
+    }
+  }catch(e){}
+});
+</script>
+</body>
+</html>
