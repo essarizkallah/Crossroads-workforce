@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crossroads Workforce Manager</title>
-<script src="https://alcdn.msauth.net/browser/2.38.1/js/msal-browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://alcdn.msauth.net/browser/2.38.1/js/msal-browser.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" defer></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f3f2f1;color:#1a1a1a;min-height:100vh}
@@ -21,44 +21,33 @@ nav{display:flex}
 .nav-btn{flex:1;padding:10px 0;font-size:13px;background:none;border:none;border-bottom:2px solid transparent;color:#605e5c;cursor:pointer;transition:all .15s}
 .nav-btn.active{color:#0078d4;border-bottom-color:#0078d4;font-weight:500}
 main{flex:1;padding:20px}
-.sec{display:none}
-.sec.active{display:block}
+.sec{display:none}.sec.active{display:block}
 .lbl{font-size:12px;color:#605e5c;display:block;margin:14px 0 5px;font-weight:500}
-select,input[type=text],input[type=number],textarea{
-  width:100%;padding:8px 10px;border:1px solid #8a8886;border-radius:2px;
-  font-size:14px;background:#fff;color:#1a1a1a;outline:none;font-family:inherit;transition:border-color .1s
-}
+select,input[type=text],input[type=number],textarea{width:100%;padding:8px 10px;border:1px solid #8a8886;border-radius:2px;font-size:14px;background:#fff;color:#1a1a1a;outline:none;font-family:inherit;transition:border-color .1s}
 select:focus,input:focus,textarea:focus{border-color:#0078d4;box-shadow:0 0 0 1px #0078d4}
 textarea{resize:vertical;min-height:72px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .btn-p{width:100%;margin-top:20px;padding:10px;background:#0078d4;color:#fff;border:none;border-radius:2px;font-size:14px;font-weight:500;cursor:pointer;transition:background .15s}
-.btn-p:hover{background:#106ebe}
-.btn-p:active{background:#005a9e}
-.btn-p:disabled{background:#c8c6c4;cursor:not-allowed}
+.btn-p:hover{background:#106ebe}.btn-p:active{background:#005a9e}
 .btn-s{width:100%;margin-top:10px;padding:9px;background:#fff;border:1px solid #8a8886;border-radius:2px;font-size:13px;color:#323130;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .1s}
 .btn-s:hover{background:#f3f2f1}
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem}
 .mc{background:#f3f2f1;border-radius:2px;padding:14px;border-left:3px solid #0078d4}
 .mc.warn{border-left-color:#d83b01}
 .ml{font-size:11px;color:#605e5c;margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
-.mv{font-size:24px;font-weight:600;color:#1a1a1a}
-.mv.warn{color:#d83b01}
+.mv{font-size:24px;font-weight:600;color:#1a1a1a}.mv.warn{color:#d83b01}
 .slbl{font-size:11px;font-weight:600;color:#605e5c;text-transform:uppercase;letter-spacing:.07em;margin:1.5rem 0 8px}
 .erow{display:flex;align-items:center;justify-content:space-between;padding:11px 13px;border:1px solid #edebe9;border-radius:2px;margin-bottom:6px;background:#fff}
 .erow:hover{background:#f3f2f1}
-.en{font-size:13px;font-weight:500}
-.es{font-size:11px;color:#605e5c;margin-top:2px}
-.eh{font-size:14px;font-weight:600}
-.eh.ot{color:#d83b01}
+.en{font-size:13px;font-weight:500}.es{font-size:11px;color:#605e5c;margin-top:2px}
+.eh{font-size:14px;font-weight:600}.eh.ot{color:#d83b01}
 .bdg{font-size:10px;padding:2px 8px;border-radius:2px;font-weight:500}
-.bot{background:#fed9cc;color:#a4262c}
-.bok{background:#dff6dd;color:#107c10}
+.bot{background:#fed9cc;color:#a4262c}.bok{background:#dff6dd;color:#107c10}
 .wtog{display:flex;border:1px solid #8a8886;border-radius:2px;margin-bottom:1.5rem;overflow:hidden}
-.wbtn{flex:1;padding:8px;font-size:12px;border:none;background:#fff;color:#605e5c;cursor:pointer;transition:all .1s}
+.wbtn{flex:1;padding:8px;font-size:12px;border:none;background:#fff;color:#605e5c;cursor:pointer}
 .wbtn.active{background:#0078d4;color:#fff;font-weight:500}
 .cwrap{position:relative;width:100%;height:210px;margin-bottom:1.5rem}
 .empty{text-align:center;padding:2.5rem 1rem;color:#a19f9d;font-size:13px}
-.banner{display:flex;align-items:center;gap:8px;font-size:12px;color:#605e5c;background:#fff4ce;border:1px solid #f7e08a;border-radius:2px;padding:8px 12px;margin-bottom:1.25rem}
 .sync-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
 .sync-status{font-size:11px;color:#605e5c;display:flex;align-items:center;gap:5px}
 .sync-dot{width:7px;height:7px;border-radius:50%;background:#107c10}
@@ -71,15 +60,39 @@ textarea{resize:vertical;min-height:72px}
 .cfg-note{font-size:12px;color:#605e5c;line-height:1.6;margin-bottom:14px;padding:10px;background:#f3f2f1;border-radius:2px}
 .cfg-note code{background:#edebe9;padding:1px 5px;border-radius:2px;font-size:11px;font-family:monospace}
 .divider{height:1px;background:#edebe9;margin:20px 0}
-.field-path{display:flex;gap:8px}
-.field-path input{flex:1}
-.sp-link{font-size:12px;color:#0078d4;text-decoration:none}
-.sp-link:hover{text-decoration:underline}
+.sp-link{font-size:12px;color:#0078d4;text-decoration:none}.sp-link:hover{text-decoration:underline}
 input[type=file]{display:none}
-.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-@keyframes spin{to{transform:rotate(360deg)}}
-.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:1rem}
-.tag{font-size:11px;background:#deecf9;color:#004578;padding:3px 9px;border-radius:2px}
+/* ── Multi cost code ── */
+.job-tags-wrap{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;min-height:0}
+.job-tag{display:inline-flex;align-items:center;gap:5px;background:#deecf9;color:#004578;font-size:12px;padding:4px 8px;border-radius:2px;font-weight:500}
+.job-tag .rm{background:none;border:none;cursor:pointer;color:#004578;font-size:14px;line-height:1;padding:0 1px}
+.job-tag .rm:hover{color:#a4262c}
+.split-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:2px;background:#f3f2f1;color:#605e5c}
+.split-badge.ok{background:#dff6dd;color:#107c10}
+.split-badge.over{background:#fed9cc;color:#a4262c}
+.split-row{display:grid;grid-template-columns:1fr 72px 80px;gap:8px;align-items:center;margin-bottom:8px}
+.split-row-label{font-size:12px;color:#323130;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.split-pct{padding:6px 8px;border:1px solid #8a8886;border-radius:2px;font-size:13px;text-align:center;width:100%}
+.split-preview{font-size:11px;color:#605e5c;text-align:right}
+.split-warn{font-size:12px;color:#a4262c;background:#fed9cc;border:1px solid #f4b8b8;border-radius:2px;padding:7px 10px;margin-top:4px}
+
+/* ── PIN modal ── */
+.pin-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:none;align-items:center;justify-content:center;padding:20px}
+.pin-modal-bg.show{display:flex}
+.pin-card{background:#fff;border-radius:4px;padding:28px 24px;width:100%;max-width:300px;box-shadow:0 4px 20px rgba(0,0,0,.15);text-align:center}
+.pin-card h3{font-size:15px;font-weight:600;margin-bottom:4px}
+.pin-card p{font-size:12px;color:#605e5c;margin-bottom:20px}
+.pin-dots{display:flex;justify-content:center;gap:12px;margin-bottom:20px}
+.pin-dot{width:13px;height:13px;border-radius:50%;background:#edebe9;border:1.5px solid #c8c6c4;transition:all .15s}
+.pin-dot.filled{background:#0078d4;border-color:#0078d4}
+.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.pin-key{padding:13px;font-size:17px;font-weight:500;background:#f3f2f1;border:none;border-radius:2px;cursor:pointer;color:#1a1a1a;transition:background .1s}
+.pin-key:active{background:#edebe9}
+.pin-key.zero{grid-column:2}
+.pin-key.del{background:none;font-size:13px;color:#605e5c}
+.pin-error{font-size:12px;color:#a4262c;min-height:18px;margin-bottom:2px}
+.pin-cancel{font-size:12px;color:#605e5c;background:none;border:none;cursor:pointer;margin-top:4px}
+@keyframes pin-shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
 </style>
 </head>
 <body>
@@ -87,7 +100,7 @@ input[type=file]{display:none}
   <header>
     <div class="logo">Crossroads <span>Workforce</span></div>
     <div class="auth-bar">
-      <div class="auth-name" id="auth-info">
+      <div class="auth-name">
         <div class="avatar" id="auth-avatar">?</div>
         <span id="auth-name-text">Not signed in</span>
       </div>
@@ -103,21 +116,36 @@ input[type=file]{display:none}
   <main>
     <!-- LOG TIME -->
     <div id="tab-log" class="sec active">
-      <div id="banner" class="banner">&#9888;&#65039; Sign in with Microsoft to load employee &amp; job data automatically.</div>
-      <div class="sync-bar" id="sync-bar" style="display:none">
-        <div class="sync-status"><div class="sync-dot" id="sync-dot"></div><span id="sync-text">Data loaded</span></div>
+      <div class="sync-bar">
+        <div class="sync-status"><div class="sync-dot" id="sync-dot"></div><span id="sync-text">Preloaded data</span></div>
         <button class="btn-sync" onclick="loadWorkbook()">&#8635; Refresh</button>
       </div>
+
       <span class="lbl">Employee</span>
       <select id="sel-emp"><option value="">— select employee —</option></select>
+
       <span class="lbl">Cost code / work type</span>
-      <select id="sel-job"><option value="">— select cost code —</option></select>
+      <div id="job-picker">
+        <div id="job-tags" class="job-tags-wrap"></div>
+        <select id="sel-job" onchange="addCostCode(this)"><option value="">— add cost code —</option></select>
+      </div>
+
+      <div id="split-section" style="display:none">
+        <span class="lbl" style="display:flex;align-items:center;justify-content:space-between">
+          % Split per cost code <span id="split-total-badge" class="split-badge">0%</span>
+        </span>
+        <div id="split-rows"></div>
+        <div id="split-warning" class="split-warn" style="display:none">&#9888; Percentages must add up to 100%</div>
+      </div>
+
       <span class="lbl">Date</span>
       <input type="text" id="entry-date" placeholder="MM/DD/YYYY">
+
       <div class="row2">
-        <div><span class="lbl">Regular hours</span><input type="number" id="reg-hrs" min="0" max="24" step="0.5" placeholder="0.0"></div>
-        <div><span class="lbl">Overtime hours</span><input type="number" id="ot-hrs" min="0" max="24" step="0.5" placeholder="0.0"></div>
+        <div><span class="lbl">Regular hours</span><input type="number" id="reg-hrs" min="0" max="24" step="0.5" placeholder="0.0" oninput="updateSplitPreview()"></div>
+        <div><span class="lbl">Overtime hours</span><input type="number" id="ot-hrs" min="0" max="24" step="0.5" placeholder="0.0" oninput="updateSplitPreview()"></div>
       </div>
+
       <span class="lbl">Notes / remarks</span>
       <textarea id="notes" placeholder="Add site notes or remarks..."></textarea>
       <button class="btn-p" onclick="submitEntry()">Save Entry</button>
@@ -126,8 +154,12 @@ input[type=file]{display:none}
     <!-- DASHBOARD -->
     <div id="tab-dash" class="sec">
       <div class="wtog">
-        <button class="wbtn active" onclick="swWeek('cur',this)">Current week</button>
-        <button class="wbtn" onclick="swWeek('last',this)">Last week</button>
+        <button class="wbtn active" id="wbtn-cur" onclick="swView('cur',this)">Current week</button>
+        <button class="wbtn" id="wbtn-last" onclick="swView('last',this)">Last week</button>
+        <button class="wbtn" id="wbtn-day" onclick="swView('day',this)">By day</button>
+      </div>
+      <div id="day-picker-wrap" style="display:none;margin-bottom:1rem">
+        <input type="date" id="day-picker" onchange="renderDash()" style="width:100%;padding:8px 10px;border:1px solid #8a8886;border-radius:2px;font-size:14px;accent-color:#0078d4">
       </div>
       <div class="mgrid" id="metrics"></div>
       <div class="slbl">Hours by cost code</div>
@@ -141,27 +173,20 @@ input[type=file]{display:none}
       <div class="slbl">Microsoft 365 connection</div>
       <div class="cfg-note">
         The app comes preloaded with the current employee and cost code data from <code>Crossroads_EMP_data_template.xlsx</code>.
-        Connect to SharePoint below to refresh automatically whenever the template is updated — or use the manual upload fallback.
+        Connect to SharePoint below to refresh automatically whenever the template is updated.
       </div>
-
       <span class="lbl">SharePoint site URL</span>
       <input type="text" id="cfg-site" placeholder="https://yourcompany.sharepoint.com/sites/YourSite" oninput="saveCfg()">
-
       <span class="lbl">Path to workbook in SharePoint</span>
-      <div class="field-path">
-        <input type="text" id="cfg-path" placeholder="/Shared Documents/Crossroads_EMP_data_template.xlsx" oninput="saveCfg()">
-      </div>
-      <p style="font-size:11px;color:#605e5c;margin-top:5px">Example: <code>/Shared Documents/HR/Crossroads_EMP_data_template.xlsx</code></p>
-
+      <input type="text" id="cfg-path" placeholder="/Shared Documents/Crossroads_EMP_data_template.xlsx" oninput="saveCfg()">
       <span class="lbl">Azure AD App (Client) ID</span>
       <input type="text" id="cfg-clientid" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" oninput="saveCfg()">
       <p style="font-size:11px;color:#605e5c;margin-top:5px">Register an app in Azure AD with <code>Files.Read</code> and <code>Sites.Read.All</code> permissions. <a class="sp-link" href="https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade" target="_blank">Open Azure Portal &#8599;</a></p>
-
       <button class="btn-p" style="margin-top:16px" onclick="applyAndLoad()">Apply &amp; Load Workbook</button>
 
       <div class="divider"></div>
       <div class="slbl">Manual fallback</div>
-      <p style="font-size:12px;color:#605e5c;margin-bottom:10px">If Graph API is unavailable, upload the workbook manually.</p>
+      <p style="font-size:12px;color:#605e5c;margin-bottom:10px">If SharePoint is unavailable, upload the workbook manually.</p>
       <button class="btn-s" onclick="document.getElementById('fInput').click()">&#128196; Upload workbook manually</button>
       <input type="file" id="fInput" accept=".xlsx,.xls" onchange="handleFileUpload(event)">
       <div id="manual-status" style="font-size:12px;color:#107c10;margin-top:6px"></div>
@@ -181,10 +206,39 @@ input[type=file]{display:none}
     </div>
   </main>
 </div>
+<!-- PIN modal -->
+<div class="pin-modal-bg" id="pin-modal">
+  <div class="pin-card">
+    <h3>&#128274; Enter PIN to save</h3>
+    <p>This entry requires authorization</p>
+    <div class="pin-dots" id="pm-dots">
+      <div class="pin-dot" id="pmd0"></div>
+      <div class="pin-dot" id="pmd1"></div>
+      <div class="pin-dot" id="pmd2"></div>
+      <div class="pin-dot" id="pmd3"></div>
+    </div>
+    <div class="pin-error" id="pm-error"></div>
+    <div class="pin-pad">
+      <button class="pin-key" onclick="pmKey('1')">1</button>
+      <button class="pin-key" onclick="pmKey('2')">2</button>
+      <button class="pin-key" onclick="pmKey('3')">3</button>
+      <button class="pin-key" onclick="pmKey('4')">4</button>
+      <button class="pin-key" onclick="pmKey('5')">5</button>
+      <button class="pin-key" onclick="pmKey('6')">6</button>
+      <button class="pin-key" onclick="pmKey('7')">7</button>
+      <button class="pin-key" onclick="pmKey('8')">8</button>
+      <button class="pin-key" onclick="pmKey('9')">9</button>
+      <button class="pin-key zero" onclick="pmKey('0')">0</button>
+      <button class="pin-key del" onclick="pmDel()">&#9003;</button>
+    </div>
+    <button class="pin-cancel" onclick="pmCancel()">Cancel</button>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-// ── State ──────────────────────────────────────────────────────────────────
+// ── Preloaded data ─────────────────────────────────────────────────────────
 var emps=[
   {id:'111121',first:'Tracie',last:'Wright'},
   {id:'111122',first:'David',last:'Lamberton'},
@@ -230,16 +284,103 @@ var jobs=[
   {code:'3056',type:'Bull Shit work'},
   {code:'9999',type:'Other'}
 ];
-var entries=[], activeWeek='cur', jChart=null, msalApp=null, account=null;
 
-// ── Config persistence ─────────────────────────────────────────────────────
+// ── App state ──────────────────────────────────────────────────────────────
+var entries=[], activeWeek='cur', jChart=null, msalApp=null, account=null;
+var selectedJobs=[];
+
+// ── Multi cost code ────────────────────────────────────────────────────────
+function addCostCode(sel){
+  var code=sel.value; if(!code) return;
+  var job=jobs.find(function(j){return j.code===code;});
+  if(!job) return;
+  if(selectedJobs.find(function(j){return j.code===code;})){showToast('Already added');sel.value='';return;}
+  selectedJobs.push({code:job.code,type:job.type});
+  sel.value='';
+  renderJobTags();
+  renderSplitRows();
+}
+
+function removeCostCode(code){
+  selectedJobs=selectedJobs.filter(function(j){return j.code!==code;});
+  renderJobTags();
+  renderSplitRows();
+}
+
+function renderJobTags(){
+  var wrap=document.getElementById('job-tags');
+  wrap.innerHTML=selectedJobs.map(function(j){
+    return'<span class="job-tag">'+j.code+' \u2014 '+j.type+
+      '<button class="rm" onclick="removeCostCode(\''+j.code+'\')">&times;</button></span>';
+  }).join('');
+}
+
+function renderSplitRows(){
+  var sec=document.getElementById('split-section');
+  var rowsEl=document.getElementById('split-rows');
+  if(selectedJobs.length<=1){sec.style.display='none';return;}
+  sec.style.display='block';
+  var even=Math.floor(100/selectedJobs.length);
+  var remainder=100-(even*selectedJobs.length);
+  rowsEl.innerHTML=selectedJobs.map(function(j,i){
+    var pct=even+(i===0?remainder:0);
+    return'<div class="split-row">'+
+      '<div class="split-row-label">'+j.code+' \u2014 '+j.type+'</div>'+
+      '<input class="split-pct" type="number" id="pct-'+j.code+'" min="0" max="100" value="'+pct+'" oninput="updateSplitPreview()">'+
+      '<div class="split-preview" id="prev-'+j.code+'">—</div>'+
+    '</div>';
+  }).join('');
+  updateSplitPreview();
+}
+
+function updateSplitPreview(){
+  if(selectedJobs.length<=1) return;
+  var reg=parseFloat(document.getElementById('reg-hrs').value)||0;
+  var ot=parseFloat(document.getElementById('ot-hrs').value)||0;
+  var total=0;
+  selectedJobs.forEach(function(j){
+    var pctEl=document.getElementById('pct-'+j.code);
+    var pct=pctEl?parseFloat(pctEl.value)||0:0;
+    total+=pct;
+    var prevEl=document.getElementById('prev-'+j.code);
+    if(prevEl){
+      var r=(reg*pct/100).toFixed(1);
+      var o=(ot*pct/100).toFixed(1);
+      prevEl.textContent=r+'h'+(ot>0?' / '+o+'OT':'');
+    }
+  });
+  var badge=document.getElementById('split-total-badge');
+  var warn=document.getElementById('split-warning');
+  badge.textContent=total+'%';
+  badge.className='split-badge'+(total===100?' ok':total>100?' over':'');
+  warn.style.display=(total!==100&&total>0)?'block':'none';
+}
+
+function getSplitTotal(){
+  var total=0;
+  selectedJobs.forEach(function(j){
+    var el=document.getElementById('pct-'+j.code);
+    total+=el?parseFloat(el.value)||0:0;
+  });
+  return total;
+}
+
+function resetCostCodes(){
+  selectedJobs=[];
+  renderJobTags();
+  document.getElementById('split-section').style.display='none';
+  document.getElementById('split-rows').innerHTML='';
+  document.getElementById('sel-job').value='';
+}
+
+// ── Config ─────────────────────────────────────────────────────────────────
 function loadCfg(){
   try{
     var c=JSON.parse(localStorage.getItem('cwCfg')||'{}');
     if(c.site) document.getElementById('cfg-site').value=c.site;
     if(c.path) document.getElementById('cfg-path').value=c.path;
     if(c.clientId) document.getElementById('cfg-clientid').value=c.clientId;
-    if(c.otThresh){ document.getElementById('ot-thresh').value=c.otThresh; document.getElementById('ot-val').textContent=c.otThresh; }
+    if(c.otThresh){document.getElementById('ot-thresh').value=c.otThresh;document.getElementById('ot-val').textContent=c.otThresh;}
   }catch(e){}
 }
 function saveCfg(){
@@ -252,38 +393,33 @@ function saveCfg(){
     }));
   }catch(e){}
 }
-function getCfg(){
-  try{ return JSON.parse(localStorage.getItem('cwCfg')||'{}'); }catch(e){ return{}; }
-}
+function getCfg(){try{return JSON.parse(localStorage.getItem('cwCfg')||'{}');}catch(e){return{};}}
 
-// ── MSAL / Auth ────────────────────────────────────────────────────────────
+// ── MSAL ───────────────────────────────────────────────────────────────────
 function initMsal(clientId){
-  if(!clientId){ showToast('Enter your Azure AD Client ID in Config first'); return null; }
-  var cfg=getCfg();
-  var tenantAuthority='https://login.microsoftonline.com/common';
+  if(!clientId){showToast('Enter your Azure AD Client ID in Config first');return null;}
   return new msal.PublicClientApplication({
-    auth:{ clientId:clientId, authority:tenantAuthority, redirectUri:window.location.href.split('?')[0] },
-    cache:{ cacheLocation:'localStorage', storeAuthStateInCookie:true }
+    auth:{clientId:clientId,authority:'https://login.microsoftonline.com/common',redirectUri:window.location.href.split('?')[0]},
+    cache:{cacheLocation:'localStorage',storeAuthStateInCookie:true}
   });
 }
 
-async function toggleAuth(){
+function toggleAuth(){
   var cfg=getCfg();
-  if(account){ signOut(); return; }
+  if(account){signOut();return;}
   msalApp=initMsal(cfg.clientId);
   if(!msalApp) return;
-  try{
-    var resp=await msalApp.loginPopup({ scopes:['User.Read','Files.Read','Sites.Read.All'] });
+  msalApp.loginPopup({scopes:['User.Read','Files.Read','Sites.Read.All']}).then(function(resp){
     account=resp.account;
     updateAuthUI();
-    await loadWorkbook();
-  }catch(e){
+    loadWorkbook();
+  }).catch(function(e){
     if(e.errorCode!=='user_cancelled') showToast('Sign-in failed: '+e.message);
-  }
+  });
 }
 
 function signOut(){
-  if(msalApp&&account) msalApp.logoutPopup({account:account}).catch(()=>{});
+  if(msalApp&&account) msalApp.logoutPopup({account:account}).catch(function(){});
   account=null; msalApp=null;
   updateAuthUI();
   showToast('Signed out');
@@ -293,111 +429,65 @@ function updateAuthUI(){
   var nameEl=document.getElementById('auth-name-text');
   var avatarEl=document.getElementById('auth-avatar');
   var signBtn=document.getElementById('sign-btn');
-  var banner=document.getElementById('banner');
-  var syncBar=document.getElementById('sync-bar');
   if(account){
     var name=account.name||account.username;
     nameEl.textContent=name;
     avatarEl.textContent=name.charAt(0).toUpperCase();
     signBtn.textContent='Sign out';
-    banner.style.display='none';
-    syncBar.style.display='flex';
   }else{
     nameEl.textContent='Not signed in';
     avatarEl.textContent='?';
     signBtn.textContent='Sign in';
-    banner.style.display='flex';
-    syncBar.style.display='none';
   }
 }
 
-async function getToken(){
-  if(!msalApp||!account) return null;
-  try{
-    var r=await msalApp.acquireTokenSilent({ scopes:['Files.Read','Sites.Read.All'], account:account });
-    return r.accessToken;
-  }catch(e){
-    try{
-      var r2=await msalApp.acquireTokenPopup({ scopes:['Files.Read','Sites.Read.All'] });
-      return r2.accessToken;
-    }catch(e2){ return null; }
-  }
+function getToken(){
+  if(!msalApp||!account) return Promise.resolve(null);
+  return msalApp.acquireTokenSilent({scopes:['Files.Read','Sites.Read.All'],account:account})
+    .then(function(r){return r.accessToken;})
+    .catch(function(){
+      return msalApp.acquireTokenPopup({scopes:['Files.Read','Sites.Read.All']})
+        .then(function(r){return r.accessToken;})
+        .catch(function(){return null;});
+    });
 }
 
-// ── Graph API: load workbook ───────────────────────────────────────────────
-async function loadWorkbook(){
+function loadWorkbook(){
   setSyncStatus('loading','Loading workbook...');
-  var token=await getToken();
-  if(!token){ setSyncStatus('error','Not signed in'); return; }
-  var cfg=getCfg();
-  if(!cfg.site||!cfg.path){ setSyncStatus('error','Set SharePoint site + path in Config'); return; }
-
-  try{
-    // Get site ID
+  getToken().then(function(token){
+    if(!token){setSyncStatus('error','Not signed in');return;}
+    var cfg=getCfg();
+    if(!cfg.site||!cfg.path){setSyncStatus('error','Set SharePoint path in Config');return;}
     var siteHostPath=cfg.site.replace('https://','').split('/');
-    var hostname=siteHostPath[0];
-    var sitePath='/'+siteHostPath.slice(1).join('/');
-    var siteResp=await fetch('https://graph.microsoft.com/v1.0/sites/'+hostname+':'+sitePath,{
-      headers:{ Authorization:'Bearer '+token }
-    });
-    if(!siteResp.ok) throw new Error('Could not find SharePoint site ('+siteResp.status+')');
-    var siteData=await siteResp.json();
-    var siteId=siteData.id;
-
-    // Get file content
-    var filePath=cfg.path.replace(/^\/+/,'');
-    var fileResp=await fetch('https://graph.microsoft.com/v1.0/sites/'+siteId+'/drive/root:/'+filePath+':/content',{
-      headers:{ Authorization:'Bearer '+token }
-    });
-    if(!fileResp.ok) throw new Error('Could not read workbook file ('+fileResp.status+'). Check the file path in Config.');
-    var arrayBuffer=await fileResp.arrayBuffer();
-    parseWorkbook(arrayBuffer);
-    setSyncStatus('ok','Synced from SharePoint');
-  }catch(e){
-    setSyncStatus('error','Error: '+e.message);
-    showToast('Load failed: '+e.message);
-  }
+    var hostname=siteHostPath[0], sitePath='/'+siteHostPath.slice(1).join('/');
+    fetch('https://graph.microsoft.com/v1.0/sites/'+hostname+':'+sitePath,{headers:{Authorization:'Bearer '+token}})
+      .then(function(r){if(!r.ok)throw new Error('Site not found ('+r.status+')');return r.json();})
+      .then(function(site){
+        var filePath=cfg.path.replace(/^\/+/,'');
+        return fetch('https://graph.microsoft.com/v1.0/sites/'+site.id+'/drive/root:/'+filePath+':/content',{headers:{Authorization:'Bearer '+token}});
+      })
+      .then(function(r){if(!r.ok)throw new Error('File not found ('+r.status+')');return r.arrayBuffer();})
+      .then(function(buf){parseWorkbook(buf);setSyncStatus('ok','Synced from SharePoint');})
+      .catch(function(e){setSyncStatus('error',e.message);showToast('Load failed: '+e.message);});
+  });
 }
 
 function parseWorkbook(buffer){
-  var data=new Uint8Array(buffer);
-  var wb=XLSX.read(data,{type:'array'});
+  var wb=XLSX.read(new Uint8Array(buffer),{type:'array'});
   var eSheet=wb.Sheets['Employee Data']||wb.Sheets[wb.SheetNames[0]];
   var jSheet=wb.Sheets['Job Data']||wb.Sheets[wb.SheetNames[1]];
-  var eData=XLSX.utils.sheet_to_json(eSheet,{defval:''});
-  var jData=jSheet?XLSX.utils.sheet_to_json(jSheet,{defval:''}):[];
-  emps=eData.map(function(r){return{
-    id:String(r['User ID']||'').trim(),
-    first:String(r['First Name']||'').trim(),
-    last:String(r['Last Name']||'').trim()
-  }}).filter(function(x){return x.id&&x.first;});
-  jobs=jData.map(function(r){return{
-    code:String(r['Cost Codes']||'').trim(),
-    type:String(r['Work Type']||'').trim()
-  }}).filter(function(x){return x.code;});
+  emps=XLSX.utils.sheet_to_json(eSheet,{defval:''}).map(function(r){return{id:String(r['User ID']||'').trim(),first:String(r['First Name']||'').trim(),last:String(r['Last Name']||'').trim()};}).filter(function(x){return x.id&&x.first;});
+  jobs=(jSheet?XLSX.utils.sheet_to_json(jSheet,{defval:''}):[]).map(function(r){return{code:String(r['Cost Codes']||'').trim(),type:String(r['Work Type']||'').trim()};}).filter(function(x){return x.code;});
   populateDDs();
   showToast('Loaded: '+emps.length+' employees, '+jobs.length+' cost codes');
 }
 
-function setSyncStatus(state,text){
-  var dot=document.getElementById('sync-dot');
-  var txt=document.getElementById('sync-text');
-  dot.className='sync-dot'+(state==='loading'?' loading':state==='error'?' error':'');
-  txt.textContent=text;
-}
-
-// ── Manual file fallback ───────────────────────────────────────────────────
 function handleFileUpload(e){
   var file=e.target.files[0]; if(!file) return;
   var reader=new FileReader();
   reader.onload=function(ev){
-    try{
-      parseWorkbook(ev.target.result);
-      document.getElementById('manual-status').textContent='Loaded from file: '+file.name;
-      document.getElementById('banner').style.display='none';
-      document.getElementById('sync-bar').style.display='flex';
-      setSyncStatus('ok','Loaded from local file');
-    }catch(err){ showToast('Error reading file'); }
+    try{parseWorkbook(ev.target.result);document.getElementById('manual-status').textContent='Loaded: '+file.name;setSyncStatus('ok','Loaded from local file');}
+    catch(err){showToast('Error reading file');}
   };
   reader.readAsArrayBuffer(file);
 }
@@ -407,36 +497,39 @@ function applyAndLoad(){
   var cfg=getCfg();
   msalApp=initMsal(cfg.clientId);
   if(!msalApp) return;
-  if(account){ loadWorkbook(); }
-  else{ toggleAuth(); }
+  if(account){loadWorkbook();}
+  else{
+    msalApp.loginPopup({scopes:['User.Read','Files.Read','Sites.Read.All']}).then(function(resp){
+      account=resp.account; updateAuthUI(); loadWorkbook();
+    }).catch(function(){showToast('Sign-in failed');});
+  }
+}
+
+function setSyncStatus(state,text){
+  document.getElementById('sync-dot').className='sync-dot'+(state==='loading'?' loading':state==='error'?' error':'');
+  document.getElementById('sync-text').textContent=text;
 }
 
 // ── Dropdowns ──────────────────────────────────────────────────────────────
 function populateDDs(){
   var se=document.getElementById('sel-emp');
-  se.innerHTML='<option value="">— select employee —</option>';
-  emps.forEach(function(e){
-    var o=document.createElement('option');
-    o.value=e.id; o.textContent=e.first+' '+e.last+' ('+e.id+')'; se.appendChild(o);
-  });
+  se.innerHTML='<option value="">\u2014 select employee \u2014</option>';
+  emps.forEach(function(e){var o=document.createElement('option');o.value=e.id;o.textContent=e.first+' '+e.last+' ('+e.id+')';se.appendChild(o);});
   var sj=document.getElementById('sel-job');
-  sj.innerHTML='<option value="">— select cost code —</option>';
-  jobs.forEach(function(j){
-    var o=document.createElement('option');
-    o.value=j.code; o.textContent=j.code+' — '+j.type; sj.appendChild(o);
-  });
+  sj.innerHTML='<option value="">\u2014 add cost code \u2014</option>';
+  jobs.forEach(function(j){var o=document.createElement('option');o.value=j.code;o.textContent=j.code+' \u2014 '+j.type;sj.appendChild(o);});
 }
 
 // ── Week helpers ───────────────────────────────────────────────────────────
 function getWeekRange(offset){
-  var now=new Date();
-  var mon=new Date(now); mon.setDate(now.getDate()-((now.getDay()+6)%7)+offset*7);
-  var sun=new Date(mon); sun.setDate(mon.getDate()+6);
-  mon.setHours(0,0,0,0); sun.setHours(23,59,59,999);
+  var now=new Date(),mon=new Date(now),sun;
+  mon.setDate(now.getDate()-((now.getDay()+6)%7)+offset*7);
+  sun=new Date(mon);sun.setDate(mon.getDate()+6);
+  mon.setHours(0,0,0,0);sun.setHours(23,59,59,999);
   return{start:mon,end:sun};
 }
 function inRange(ds,r){
-  var p=ds.split('/'); if(p.length!==3) return false;
+  var p=ds.split('/');if(p.length!==3)return false;
   var d=new Date(parseInt(p[2]),parseInt(p[0])-1,parseInt(p[1]));
   return d>=r.start&&d<=r.end;
 }
@@ -444,66 +537,93 @@ function inRange(ds,r){
 // ── Entry submission ───────────────────────────────────────────────────────
 function submitEntry(){
   var es=document.getElementById('sel-emp');
-  var js=document.getElementById('sel-job');
-  var empId=es.value, empTxt=es.options[es.selectedIndex].text;
-  var jobCode=js.value, jobTxt=js.options[js.selectedIndex].text;
+  var empId=es.value,empTxt=es.options[es.selectedIndex].text;
   var date=document.getElementById('entry-date').value;
   var reg=parseFloat(document.getElementById('reg-hrs').value)||0;
   var ot=parseFloat(document.getElementById('ot-hrs').value)||0;
   var notes=document.getElementById('notes').value;
-  if(!empId||!jobCode||!date){ showToast('Fill in employee, cost code, and date'); return; }
-  if(reg===0&&ot===0){ showToast('Enter at least some hours'); return; }
-  var supervisor=account?account.name:'Unknown';
-  entries.push({empId:empId,empTxt:empTxt,jobCode:jobCode,jobTxt:jobTxt,date:date,reg:reg,ot:ot,notes:notes,loggedBy:supervisor,ts:new Date().toISOString()});
+  if(!empId){showToast('Select an employee');return;}
+  if(selectedJobs.length===0){showToast('Add at least one cost code');return;}
+  if(!date){showToast('Enter a date');return;}
+  if(reg===0&&ot===0){showToast('Enter at least some hours');return;}
+  if(selectedJobs.length>1&&getSplitTotal()!==100){showToast('Percentages must add up to 100%');return;}
+  var supervisor=account?account.name:'Supervisor';
+  var ts=new Date().toISOString();
+  var snapshot={empId:empId,empTxt:empTxt,date:date,reg:reg,ot:ot,notes:notes,supervisor:supervisor,ts:ts,
+    jobs:selectedJobs.map(function(j){
+      var pctEl=document.getElementById('pct-'+j.code);
+      return{code:j.code,type:j.type,pct:pctEl?parseFloat(pctEl.value)||0:100};
+    })
+  };
+  openPinModal(snapshot);
+}
+
+function commitEntry(snapshot){
+  if(snapshot.jobs.length===1){
+    var j=snapshot.jobs[0];
+    entries.push({empId:snapshot.empId,empTxt:snapshot.empTxt,jobCode:j.code,jobTxt:j.code+' — '+j.type,date:snapshot.date,reg:snapshot.reg,ot:snapshot.ot,notes:snapshot.notes,loggedBy:snapshot.supervisor,ts:snapshot.ts});
+  }else{
+    snapshot.jobs.forEach(function(j){
+      var pct=j.pct/100;
+      entries.push({empId:snapshot.empId,empTxt:snapshot.empTxt,jobCode:j.code,jobTxt:j.code+' — '+j.type,date:snapshot.date,reg:Math.round(snapshot.reg*pct*10)/10,ot:Math.round(snapshot.ot*pct*10)/10,notes:snapshot.notes,loggedBy:snapshot.supervisor,ts:snapshot.ts});
+    });
+  }
   document.getElementById('reg-hrs').value='';
   document.getElementById('ot-hrs').value='';
   document.getElementById('notes').value='';
-  showToast('Entry saved');
+  resetCostCodes();
+  showToast(snapshot.jobs.length>1?'Saved across '+snapshot.jobs.length+' cost codes':'Entry saved ✔');
 }
 
 // ── Dashboard ──────────────────────────────────────────────────────────────
 function renderDash(){
-  var offset=activeWeek==='cur'?0:-1;
-  var range=getWeekRange(offset);
-  var filtered=entries.filter(function(e){return inRange(e.date,range);});
+  var filtered;
+  if(activeWeek==='day'){
+    var dp=document.getElementById('day-picker').value;
+    if(!dp){ filtered=[]; }
+    else{
+      // dp is YYYY-MM-DD, entry dates are MM/DD/YYYY
+      var dpParts=dp.split('-');
+      var dpStr=dpParts[1]+'/'+dpParts[2]+'/'+dpParts[0];
+      filtered=entries.filter(function(e){ return e.date===dpStr; });
+    }
+  } else {
+    var offset=activeWeek==='cur'?0:-1;
+    var range=getWeekRange(offset);
+    filtered=entries.filter(function(e){return inRange(e.date,range);});
+  }
   var thresh=parseInt(document.getElementById('ot-thresh').value);
   var totalReg=filtered.reduce(function(a,e){return a+e.reg;},0);
   var totalOT=filtered.reduce(function(a,e){return a+e.ot;},0);
-  var empIds=[]; filtered.forEach(function(e){if(empIds.indexOf(e.empId)<0)empIds.push(e.empId);});
-  var empHrs={};
-  filtered.forEach(function(e){empHrs[e.empId]=(empHrs[e.empId]||0)+e.reg+e.ot;});
+  var empIds=[];filtered.forEach(function(e){if(empIds.indexOf(e.empId)<0)empIds.push(e.empId);});
+  var empHrs={};filtered.forEach(function(e){empHrs[e.empId]=(empHrs[e.empId]||0)+e.reg+e.ot;});
   var otCount=Object.values(empHrs).filter(function(h){return h>=thresh;}).length;
   document.getElementById('metrics').innerHTML=
     '<div class="mc"><div class="ml">Regular hours</div><div class="mv">'+totalReg.toFixed(1)+'</div></div>'+
-    '<div class="mc '+(totalOT>0?'warn':'')+'"><div class="ml">Overtime hours</div><div class="mv'+(totalOT>0?' warn':'')+'">'+totalOT.toFixed(1)+'</div></div>'+
+    '<div class="mc'+(totalOT>0?' warn':'')+'"><div class="ml">Overtime hours</div><div class="mv'+(totalOT>0?' warn':'')+'">'+totalOT.toFixed(1)+'</div></div>'+
     '<div class="mc"><div class="ml">Employees logged</div><div class="mv">'+empIds.length+'</div></div>'+
-    '<div class="mc '+(otCount>0?'warn':'')+'"><div class="ml">OT alerts (>='+thresh+'h)</div><div class="mv'+(otCount>0?' warn':'')+'">'+otCount+'</div></div>';
+    '<div class="mc'+(otCount>0?' warn':'')+'"><div class="ml">OT alerts (>='+thresh+'h)</div><div class="mv'+(otCount>0?' warn':'')+'">'+otCount+'</div></div>';
   var jobHrs={};
   filtered.forEach(function(e){
-    var lbl=e.jobCode+(e.jobTxt.indexOf(' — ')>-1?' — '+e.jobTxt.split(' — ')[1]:'');
+    var lbl=e.jobCode+(e.jobTxt.indexOf(' \u2014 ')>-1?' \u2014 '+e.jobTxt.split(' \u2014 ')[1]:'');
     jobHrs[lbl]=(jobHrs[lbl]||0)+e.reg+e.ot;
   });
-  var jL=Object.keys(jobHrs), jV=Object.values(jobHrs);
+  var jL=Object.keys(jobHrs),jV=Object.values(jobHrs);
   if(jChart){jChart.destroy();jChart=null;}
   if(jL.length>0){
     jChart=new Chart(document.getElementById('jChart'),{
       type:'bar',
       data:{labels:jL,datasets:[{label:'Hours',data:jV,backgroundColor:'#0078d4',borderRadius:2}]},
       options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-        scales:{x:{ticks:{font:{size:10},autoSkip:false,maxRotation:35},grid:{display:false}},
-                y:{beginAtZero:true,ticks:{font:{size:11}}}}}
+        scales:{x:{ticks:{font:{size:10},autoSkip:false,maxRotation:35},grid:{display:false}},y:{beginAtZero:true,ticks:{font:{size:11}}}}}
     });
   }
   var el=document.getElementById('emp-list');
   if(!filtered.length){el.innerHTML='<div class="empty">No entries for this week yet</div>';return;}
   var em={};
-  filtered.forEach(function(e){
-    if(!em[e.empId])em[e.empId]={txt:e.empTxt,reg:0,ot:0};
-    em[e.empId].reg+=e.reg; em[e.empId].ot+=e.ot;
-  });
+  filtered.forEach(function(e){if(!em[e.empId])em[e.empId]={txt:e.empTxt,reg:0,ot:0};em[e.empId].reg+=e.reg;em[e.empId].ot+=e.ot;});
   el.innerHTML=Object.values(em).sort(function(a,b){return(b.reg+b.ot)-(a.reg+a.ot);}).map(function(e){
-    var total=e.reg+e.ot, isOT=total>=thresh;
-    var name=e.txt.replace(/ \(\d+\)$/,'');
+    var total=e.reg+e.ot,isOT=total>=thresh,name=e.txt.replace(/ \(\d+\)$/,'');
     return'<div class="erow"><div><div class="en">'+name+'</div><div class="es">'+e.reg.toFixed(1)+'h reg / '+e.ot.toFixed(1)+'h OT</div></div>'+
       '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">'+
       '<span class="eh'+(isOT?' ot':'')+'">'+total.toFixed(1)+'h</span>'+
@@ -511,10 +631,16 @@ function renderDash(){
   }).join('');
 }
 
-function swWeek(w,btn){
-  activeWeek=w;
-  document.querySelectorAll('.wbtn').forEach(function(b){b.classList.remove('active');});
+function swView(view, btn){
+  activeWeek = view;
+  document.querySelectorAll('.wbtn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
+  document.getElementById('day-picker-wrap').style.display = view === 'day' ? 'block' : 'none';
+  if(view === 'day' && !document.getElementById('day-picker').value){
+    // Default to today
+    var t = new Date();
+    document.getElementById('day-picker').value = t.getFullYear()+'-'+(t.getMonth()+1).toString().padStart(2,'0')+'-'+t.getDate().toString().padStart(2,'0');
+  }
   renderDash();
 }
 
@@ -531,15 +657,13 @@ function exportCSV(){
   var a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
   a.download='crossroads_time_'+new Date().toISOString().slice(0,10)+'.csv';
-  a.click();
-  showToast('CSV exported');
+  a.click();showToast('CSV exported');
 }
 
 function clearEntries(){
   if(!entries.length){showToast('No entries to clear');return;}
   if(!confirm('Clear all '+entries.length+' entries? This cannot be undone.')) return;
-  entries=[];
-  showToast('All entries cleared');
+  entries=[];showToast('All entries cleared');
 }
 
 // ── Nav ────────────────────────────────────────────────────────────────────
@@ -553,35 +677,89 @@ function sw(tab,btn){
 
 function showToast(msg){
   var t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
+  t.textContent=msg;t.classList.add('show');
   setTimeout(function(){t.classList.remove('show');},2800);
 }
 
-// ── Init ───────────────────────────────────────────────────────────────────
-var d=new Date();
-document.getElementById('entry-date').value=(d.getMonth()+1).toString().padStart(2,'0')+'/'+d.getDate().toString().padStart(2,'0')+'/'+d.getFullYear();
-loadCfg();
-// Preloaded data — populate dropdowns immediately, no upload needed
-populateDDs();
-document.getElementById('banner').style.display='none';
-document.getElementById('sync-bar').style.display='flex';
-document.getElementById('sync-dot').className='sync-dot';
-document.getElementById('sync-text').textContent='Preloaded data ('+emps.length+' employees, '+jobs.length+' cost codes)';
 
-// Try silent sign-in on load if clientId is already saved
-window.addEventListener('load', async function(){
-  var cfg=getCfg();
-  if(!cfg.clientId) return;
-  msalApp=initMsal(cfg.clientId);
-  if(!msalApp) return;
-  try{
-    var accounts=msalApp.getAllAccounts();
-    if(accounts.length>0){
-      account=accounts[0];
-      updateAuthUI();
-      await loadWorkbook();
+// ── PIN lock ───────────────────────────────────────────────────────────────
+var SAVE_PIN = '6969';
+var pmBuffer = '';
+var pendingEntry = null; // stores validated entry data waiting for PIN
+
+function pmKey(k) {
+  if (pmBuffer.length >= 4) return;
+  pmBuffer += k;
+  pmUpdateDots();
+  if (pmBuffer.length === 4) setTimeout(pmCheck, 120);
+}
+
+function pmDel() {
+  pmBuffer = pmBuffer.slice(0, -1);
+  pmUpdateDots();
+  document.getElementById('pm-error').textContent = '';
+}
+
+function pmUpdateDots() {
+  for (var i = 0; i < 4; i++) {
+    document.getElementById('pmd' + i).className = 'pin-dot' + (i < pmBuffer.length ? ' filled' : '');
+  }
+}
+
+function pmCheck() {
+  if (pmBuffer === SAVE_PIN) {
+    document.getElementById('pin-modal').classList.remove('show');
+    pmBuffer = '';
+    pmUpdateDots();
+    document.getElementById('pm-error').textContent = '';
+    if (pendingEntry) {
+      commitEntry(pendingEntry);
+      pendingEntry = null;
     }
-  }catch(e){}
+  } else {
+    document.getElementById('pm-error').textContent = 'Incorrect PIN — try again';
+    pmBuffer = '';
+    pmUpdateDots();
+    // shake
+    var dots = document.getElementById('pm-dots');
+    dots.style.animation = 'none';
+    setTimeout(function() { dots.style.animation = 'pin-shake .3s ease'; }, 10);
+  }
+}
+
+function pmCancel() {
+  document.getElementById('pin-modal').classList.remove('show');
+  pmBuffer = '';
+  pmUpdateDots();
+  document.getElementById('pm-error').textContent = '';
+  pendingEntry = null;
+  showToast('Save cancelled');
+}
+
+function openPinModal(entryData) {
+  pendingEntry = entryData;
+  pmBuffer = '';
+  pmUpdateDots();
+  document.getElementById('pm-error').textContent = '';
+  document.getElementById('pin-modal').classList.add('show');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded',function(){
+  var d=new Date();
+  document.getElementById('entry-date').value=(d.getMonth()+1).toString().padStart(2,'0')+'/'+d.getDate().toString().padStart(2,'0')+'/'+d.getFullYear();
+  loadCfg();
+  populateDDs();
+  setSyncStatus('ok','Preloaded data ('+emps.length+' employees, '+jobs.length+' cost codes)');
+  // Silent M365 sign-in if previously connected
+  var cfg=getCfg();
+  if(cfg.clientId){
+    msalApp=initMsal(cfg.clientId);
+    if(msalApp){
+      var accounts=msalApp.getAllAccounts();
+      if(accounts.length>0){account=accounts[0];updateAuthUI();loadWorkbook();}
+    }
+  }
 });
 </script>
 </body>
